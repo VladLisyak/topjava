@@ -46,13 +46,11 @@ public class UserMealsUtil {
             int count = userMeals.stream().collect(Collectors.summingInt(UserMeal::getCalories));
             userMeals
                     .stream()
-                    .filter(n -> n.getDateTime().getHour() >= startTime.getHour() && n.getDateTime().getHour() <= endTime.getHour())
+                    .filter(n -> TimeUtil.isBetween(n.getDateTime().toLocalTime(), startTime, endTime))
                     .forEach(userMeal -> result.add(new UserMealWithExceed(userMeal, count > caloriesPerDay)));
         });
 
 
-        result.forEach(System.out::println);
-
-        return null;
+        return result;
     }
 }
