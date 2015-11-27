@@ -6,8 +6,11 @@ import ru.javawebinar.topjava.model.UserMealWithExceed;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * GKislin
@@ -28,8 +31,28 @@ public class UserMealsUtil {
 //        .toLocalTime();
     }
 
-    public static List<UserMealWithExceed>  getFilteredMealsWithExceeded(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        // TODO return filtered list with correctly exceeded field
+    public static List<UserMealWithExceed>  getFilteredMealsWithExceeded(List<UserMeal> mealList,
+                                                                         LocalTime startTime,
+                                                                         LocalTime endTime,
+                                                                         int caloriesPerDay) {
+
+
+        List<UserMealWithExceed> result = new ArrayList<>();
+        Map<String, List<UserMeal>> mapByDate = mealList
+                .stream()
+                .collect(Collectors.groupingBy(userMeal1 -> userMeal1.getDateTime().toString().substring(0,11)));
+
+        mapByDate.forEach((localDateTime, userMeals) -> {
+            int count = userMeals.stream().collect(Collectors.summingInt(UserMeal::getCalories));
+            userMeals
+                    .stream()
+                    .filter(n -> n.getDateTime().getHour() >= startTime.getHour() && n.getDateTime().getHour() <= endTime.getHour())
+                    .forEach(userMeal -> result.add(new UserMealWithExceed(userMeal, count > caloriesPerDay)));
+        });
+
+
+        result.forEach(System.out::println);
+
         return null;
     }
 }
