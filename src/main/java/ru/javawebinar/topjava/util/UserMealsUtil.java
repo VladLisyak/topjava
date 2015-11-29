@@ -41,8 +41,8 @@ public class UserMealsUtil {
 
         mealList.forEach(userMeal1 -> {
             LocalDate t = LocalDate.from(userMeal1.getDateTime());
-            Integer i = mapByDate.get(t);
-            mapByDate.put(t, i == null ? userMeal1.getCalories() : userMeal1.getCalories() + i);
+            int i = mapByDate.get(t);
+            mapByDate.put(t, userMeal1.getCalories() + i);
         });
 
 
